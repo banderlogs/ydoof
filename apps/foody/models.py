@@ -72,6 +72,37 @@ class BuyerManager(models.Manager):
             return False
 
 
+class DishManager(models.Manager):
+    def create_new_dish(self, dish_name, dish_description, dish_price, dish_photo_url, dish_chef_obj):
+        error = []
+
+        if not dish_name:
+            error.append("Dish name field must be filled out.")
+        elif len(dish_name) < 3:
+            error.append("Dish Name is too short. It must be more than 3 letters.")
+
+        if not dish_description:
+            error.append("Dish description must be filled out.")
+
+        if not dish_price:
+            error.append("Dish price must be filled out.")
+
+        if not dish_photo_url:
+            error.append("Dish Photo must be filled out.")
+
+        if len(error) > 0:
+            return [False, error]
+        else:
+            newDish = Dish.dish_manager.create(name=dish_name,
+                                               price=dish_price,
+                                               description=dish_description,
+                                               photo_url=dish_photo_url,
+                                               belong_to_chef=dish_chef_obj,
+                                               created_at=now,
+                                               updated_at=now)
+            return [True]
+
+
 class Chef(models.Model):
     name = models.CharField(max_length=60)
     address = models.CharField(max_length=100)
@@ -91,14 +122,14 @@ class Chef(models.Model):
 class Dish(models.Model):
     name = models.CharField(max_length=60)
     price = models.FloatField()
-    rating = models.FloatField(null=True, blank=True, default='5.0')
     description = models.TextField()
-    photo = models.URLField(max_length=200)
+    photo_url = models.URLField(max_length=200)
     belong_to_chef = models.ForeignKey(Chef)
 
+    rating = models.FloatField(null=True, blank=True, default='5.0')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    dish_manager = BuyerManager()
+    dish_manager = DishManager()
 
 
 class Order(models.Manager):
