@@ -43,4 +43,3 @@ def add_dish(request):
     elif request.GET:
         return render(request, '/add_dish')
 
-def return_dish(request):

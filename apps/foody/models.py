@@ -41,43 +41,45 @@ class ChefManager(models.Manager):
                 error.append("The password or username is wrong.")
                 return [False, error]
 
+    def register_chef(self, name, email, password):
+        """
+        Author: NP
+        Used to register a new Chef
 
-    def register_chef(self, name, description, photo_url, location, carry_deliv, time_availability):
-       """
-       Author: NP
-       Used to register a new Chef
+        :param name:
+        :param description:
+        :param photo_url:
+        :param location:
+        :param carry_deliv:
+        :param time_availability:
+        :return:
+        """
 
-       :param name:
-       :param description:
-       :param photo_url:
-       :param location:
-       :param carry_deliv:
-       :param time_availability:
-       :return:
-       """
+        error = []
 
-       error = []
+        if not name:
+            error.append("Chef Name field must not be empty.")
+        elif len(name) < 3:
+            error.append("Chef name is too short.")
 
-       if not username:
-           error.append("Chef Name field must not be empty.")
-       elif len(username) < 3:
-           error.append("Chef name is too short.")
+        if not EMAIL_REGEX.match(email):
+            error.append("Email is in wrong format")
 
-       if not password:
-           error.append("Password field must not be empty.")
-       elif len(password) < 8:
-           error.append("Chef name is too short.")
+        if not password:
+            error.append("Password field must not be empty.")
+        elif len(password) < 8:
+            error.append("Chef name is too short.")
 
-       if len(error) > 0:
-           return [False, error]
-       else:
-           passwordHash = Chef.chef_manager.get(username=username).password.encode()
+        if len(error) > 0:
+            return [False, error]
+        else:
+            passwordHash = Chef.chef_manager.get(name=name).password.encode()
 
-           if bcrypt.hashpw(password, passwordHash) == passwordHash:
-               return True
-           else:
-               error.append("The password or username is wrong.")
-               return [False, error]
+            if bcrypt.hashpw(password, passwordHash) == passwordHash:
+                return True
+            else:
+                error.append("The password or username is wrong.")
+                return [False, error]
 
 
 class BuyerManager(models.Manager):
@@ -172,7 +174,7 @@ class DishManager(models.Manager):
             error.append("Dish price must be filled out.")
 
         if not dish_photo_url:
-            error.append("Dish Photo must be filled out.")
+            error.append("At least one Dish Photo must be submitted.")
 
         if len(error) > 0:
             return [False, error]
@@ -189,14 +191,14 @@ class DishManager(models.Manager):
 
 class Chef(models.Model):
     name = models.CharField(max_length=60)
-    address = models.CharField(max_length=100)
+    address = models.CharField(max_length=100, null=True)
     email = models.CharField(max_length=45)
     password = models.CharField(max_length=25)
-    credit_card = models.CharField(max_length=150)
-    description = models.CharField(max_length=200)
+    credit_card = models.CharField(max_length=150, null=True)
+    description = models.CharField(max_length=200, null=True)
     rating = models.FloatField(null=True, blank=True, default='5.0')
-    photo = models.URLField(max_length=200)
-    location = models.CharField(max_length=100)
+    photo = models.URLField(max_length=200, null=True)
+    location = models.CharField(max_length=100, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -245,7 +247,6 @@ class Order(models.Manager):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-
 class Buyer(models.Model):
     username = models.CharField(max_length=60)
     address = models.CharField(max_length=100)
@@ -270,9 +271,3 @@ class Message(models.Model):
     )
     send_at = models.DateTimeField(auto_now_add=True)
     message = models.TextField()
-
-
-
-
-
-
