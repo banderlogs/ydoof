@@ -10,7 +10,11 @@ def index(request):
         "img": 123
     }
 
-    return render(request, "index.html")
+    return render(request, "index.html", context)
+
+
+def login_register(request):
+    return render(request, '')
 
 
 def add_dish(request):
