@@ -1,10 +1,83 @@
 from __future__ import unicode_literals
 from django.db import models
+import bcrypt
 import re
 import datetime
 
 now = datetime.datetime.now()
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+
+
+class ChefManager(models.Manager):
+    def login_chef(self, username, password):
+        """
+        Author: NP
+        Used to login the chef
+
+        :param username: chef username
+        :param password: chef password
+        :return:
+        """
+        error = []
+
+        if not username:
+            error.append("Chef Name field must not be empty.")
+        elif len(username) < 3:
+            error.append("Chef name is too short.")
+
+        if not password:
+            error.append("Password field must not be empty.")
+        elif len(password) < 8:
+            error.append("Chef name is too short.")
+
+        if len(error) > 0:
+            return [False, error]
+        else:
+            passwordHash = Chef.chef_manager.get(username=username).password.encode()
+
+            if bcrypt.hashpw(password, passwordHash) == passwordHash:
+                return True
+            else:
+                error.append("The password or username is wrong.")
+                return [False, error]
+
+
+    def register_chef(self, name, description, photo_url, location, carry_deliv, time_availability):
+       """
+       Author: NP
+       Used to register a new Chef
+
+       :param name:
+       :param description:
+       :param photo_url:
+       :param location:
+       :param carry_deliv:
+       :param time_availability:
+       :return:
+       """
+
+       error = []
+
+       if not username:
+           error.append("Chef Name field must not be empty.")
+       elif len(username) < 3:
+           error.append("Chef name is too short.")
+
+       if not password:
+           error.append("Password field must not be empty.")
+       elif len(password) < 8:
+           error.append("Chef name is too short.")
+
+       if len(error) > 0:
+           return [False, error]
+       else:
+           passwordHash = Chef.chef_manager.get(username=username).password.encode()
+
+           if bcrypt.hashpw(password, passwordHash) == passwordHash:
+               return True
+           else:
+               error.append("The password or username is wrong.")
+               return [False, error]
 
 
 class BuyerManager(models.Manager):
@@ -74,6 +147,17 @@ class BuyerManager(models.Manager):
 
 class DishManager(models.Manager):
     def create_new_dish(self, dish_name, dish_description, dish_price, dish_photo_url, dish_chef_obj):
+        """
+        Author: NP
+        Creates and validates the new dish
+
+        :param dish_name:
+        :param dish_description:
+        :param dish_price:
+        :param dish_photo_url:
+        :param dish_chef_obj:
+        :return:
+        """
         error = []
 
         if not dish_name:
@@ -93,13 +177,13 @@ class DishManager(models.Manager):
         if len(error) > 0:
             return [False, error]
         else:
-            newDish = Dish.dish_manager.create(name=dish_name,
-                                               price=dish_price,
-                                               description=dish_description,
-                                               photo_url=dish_photo_url,
-                                               belong_to_chef=dish_chef_obj,
-                                               created_at=now,
-                                               updated_at=now)
+            Dish.dish_manager.create(name=dish_name,
+                                     price=dish_price,
+                                     description=dish_description,
+                                     photo_url=dish_photo_url,
+                                     belong_to_chef=dish_chef_obj,
+                                     created_at=now,
+                                     updated_at=now)
             return [True]
 
 
@@ -116,7 +200,7 @@ class Chef(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    chef_manager = BuyerManager()
+    chef_manager = ChefManager()
 
 
 class Dish(models.Model):
@@ -133,16 +217,10 @@ class Dish(models.Model):
 
 
 class Order(models.Manager):
-    price = models.FloatField()
-    dishes = models.ManyToManyField(Dish)
-
     STATE_CHOICES = (
-        ('NS', 'NO_STATE'),
-        ('PE', 'PENDING'),
-        ('AP', 'APPROVED'),
-        ('RJ', 'REJECTED'),
-        ('DEL', 'DELIVERY'),
-        ('FIN', 'FINAL'),
+        ('NS', 'NO_STATE'), ('PE', 'PENDING'),
+        ('AP', 'APPROVED'), ('RJ', 'REJECTED'),
+        ('DEL', 'DELIVERY'), ('FIN', 'FINAL'),
     )
     state = models.CharField(
         max_length=2,
@@ -150,21 +228,22 @@ class Order(models.Manager):
         default='NO_STATE',
     )
 
-    comment = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
     DELIVERY_CHOICES = (
-        ('NS', 'NO_STATE'),
-        ('CO', 'CARRY_OUT'),
-        ('DE', 'DELIVERY'),
-        ('BO', 'BOTH')
+        ('NS', 'NO_STATE'), ('CO', 'CARRY_OUT'),
+        ('DE', 'DELIVERY'), ('BO', 'BOTH'),
     )
     delivery_type = models.CharField(
         max_length=2,
         choices=DELIVERY_CHOICES,
         default='NO_STATE',
     )
+
+    price = models.FloatField()
+    dishes = models.ManyToManyField(Dish)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
 
 
 class Buyer(models.Model):
