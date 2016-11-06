@@ -41,12 +41,12 @@ class ChefManager(models.Manager):
                 error.append("The password or username is wrong.")
                 return [False, error]
 
-    def register_chef(self, name, email, password):
+    def register_chef(self, user_name, email, password):
         """
         Author: NP
         Used to register a new Chef
 
-        :param name:
+        :param user_name:
         :param description:
         :param photo_url:
         :param location:
@@ -57,10 +57,10 @@ class ChefManager(models.Manager):
 
         error = []
 
-        if not name:
+        if not user_name:
             error.append("Chef Name field must not be empty.")
-        elif len(name) < 3:
-            error.append("Chef name is too short.")
+        elif len(user_name) < 3:
+            error.append("Chef user_name is too short.")
 
         if not EMAIL_REGEX.match(email):
             error.append("Email is in wrong format")
@@ -68,12 +68,12 @@ class ChefManager(models.Manager):
         if not password:
             error.append("Password field must not be empty.")
         elif len(password) < 8:
-            error.append("Chef name is too short.")
+            error.append("Chef user_name is too short.")
 
         if len(error) > 0:
             return [False, error]
         else:
-            passwordHash = Chef.chef_manager.get(name=name).password.encode()
+            passwordHash = Chef.chef_manager.get(name=user_name).password.encode()
 
             if bcrypt.hashpw(password, passwordHash) == passwordHash:
                 return True
@@ -189,6 +189,32 @@ class DishManager(models.Manager):
             return [True]
 
 
+class OrderManager(models.Manager):
+    def create_new_order(self, order_price, order_dishes, order_comment, order_delivery_options):
+
+        error = []
+
+        if not order_price:
+            error.append("Order Price field must be filled out.")
+
+        if not order_dishes:
+            error.append("Dish Order field must be filled out.")
+
+        if len(error) > 0:
+            return [False, error]
+        else:
+            Order.order_manager.create(state='PENDING',
+                                       delivery_type=order_delivery_options,
+                                       price=order_price,
+                                       dishes=order_dishes,
+                                       comment=order_comment,
+                                       created_at=now,
+                                       updated_at=now)
+
+            return [True]
+
+
+
 class Chef(models.Model):
     name = models.CharField(max_length=60)
     address = models.CharField(max_length=100, null=True)
@@ -199,6 +225,16 @@ class Chef(models.Model):
     rating = models.FloatField(null=True, blank=True, default='5.0')
     photo = models.URLField(max_length=200, null=True)
     location = models.CharField(max_length=100, null=True)
+
+    DELIVERY_CHOICES = (
+        ('NS', 'NO_STATE'), ('CO', 'CARRY_OUT'),
+        ('DE', 'DELIVERY'), ('BO', 'BOTH'),
+    )
+    delivery_type = models.CharField(
+        max_length=2,
+        choices=DELIVERY_CHOICES,
+        default='NO_STATE',
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -245,6 +281,7 @@ class Order(models.Manager):
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    order_manager = OrderManager()
 
 
 class Buyer(models.Model):
