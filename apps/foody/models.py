@@ -72,11 +72,38 @@ class BuyerManager(models.Manager):
             return False
 
 
+class Chef(models.Model):
+    name = models.CharField(max_length=60)
+    address = models.CharField(max_length=100)
+    email = models.CharField(max_length=45)
+    password = models.CharField(max_length=25)
+    credit_card = models.CharField(max_length=150)
+    description = models.CharField(max_length=200)
+    rating = models.FloatField(null=True, blank=True, default='5.0')
+    photo = models.URLField(max_length=200)
+    location = models.CharField(max_length=100)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    chef_manager = BuyerManager()
+
+
+class Dish(models.Model):
+    name = models.CharField(max_length=60)
+    price = models.FloatField()
+    rating = models.FloatField(null=True, blank=True, default='5.0')
+    description = models.TextField()
+    photo = models.URLField(max_length=200)
+    belong_to_chef = models.ForeignKey(Chef)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    dish_manager = BuyerManager()
+
+
 class Order(models.Manager):
     price = models.FloatField()
-    dishes = models.ManyToManyField(
-        Dish,
-    )
+    dishes = models.ManyToManyField(Dish)
 
     STATE_CHOICES = (
         ('NS', 'NO_STATE'),
@@ -135,30 +162,7 @@ class Message(models.Model):
     message = models.TextField()
 
 
-class Chef(models.Model):
-    name = models.CharField(max_length=60)
-    address = models.CharField(max_length=100)
-    email = models.CharField(max_length=45)
-    password = models.CharField(max_length=25)
-    credit_card = models.CharField(max_length=150)
-    description = models.CharField(max_length=200)
-    rating = models.FloatField(null=True, blank=True, default='5.0')
-    photo = models.URLField(max_length=200)
-    location = models.CharField(max_length=100)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    chef_manager = BuyerManager()
 
 
-class Dish(models.Model):
-    name = models.CharField(max_length=60)
-    price = models.FloatField()
-    rating = models.FloatField(null=True, blank=True, default='5.0')
-    description = models.TextField()
-    photo = models.URLField(max_length=200)
-    belong_to_chef = models.ForeignKey(Chef)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    dish_manager = BuyerManager()
+
