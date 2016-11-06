@@ -18,4 +18,8 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index),
+    url(r'^login$', views.login_register),
+    url(r'^register_chef$', views.register_chef),
+    url(r'^login_chef$', views.login_chef),
+
 ]

@@ -21,7 +21,7 @@ class ChefManager(models.Manager):
         error = []
 
         if not username:
-            error.append("Chef Name field must not be empty.")
+            error.append("error")
         elif len(username) < 3:
             error.append("Chef name is too short.")
 
@@ -41,6 +41,7 @@ class ChefManager(models.Manager):
                 error.append("The password or username is wrong.")
                 return [False, error]
 
+
     def register_chef(self, user_name, email, password):
         """
         Author: NP
@@ -54,32 +55,33 @@ class ChefManager(models.Manager):
         :param time_availability:
         :return:
         """
+        hashedPW = bcrypt.hashpw(password, bcrypt.gensalt())
+        Chef.chef_manager.create(name=user_name, email=email, password=hashedPW, created_at=now, updated_at=now)
+        return [True]
 
-        error = []
-
-        if not user_name:
-            error.append("Chef Name field must not be empty.")
-        elif len(user_name) < 3:
-            error.append("Chef user_name is too short.")
-
-        if not EMAIL_REGEX.match(email):
-            error.append("Email is in wrong format")
-
-        if not password:
-            error.append("Password field must not be empty.")
-        elif len(password) < 8:
-            error.append("Chef user_name is too short.")
-
-        if len(error) > 0:
-            return [False, error]
+    def validuser(self, username_valid):
+        if len(username_valid) < 3:
+            return True
         else:
-            passwordHash = Chef.chef_manager.get(name=user_name).password.encode()
+            return False
 
-            if bcrypt.hashpw(password, passwordHash) == passwordHash:
-                return True
-            else:
-                error.append("The password or username is wrong.")
-                return [False, error]
+    def validemail(self, email_valid):
+        if not EMAIL_REGEX.match(email_valid):
+            return True
+        else:
+            return False
+
+    def validpassword(self, pass_valid):
+        if len(pass_valid) < 8:
+            return True
+        else:
+            return False
+
+    def matchpasswords(self, password, confirm_password):
+        if password != confirm_password:
+            return True
+        else:
+            return False
 
 
 class BuyerManager(models.Manager):
