@@ -203,3 +203,8 @@ def add_dish(request):
     elif request.GET:
         return render(request, '/add_dish')
 
+<<<<<<< Updated upstream
+=======
+def return_dish(request):
+    pass
+>>>>>>> Stashed changes
