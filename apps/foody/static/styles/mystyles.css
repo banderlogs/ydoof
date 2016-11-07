@@ -1,0 +1,110 @@
+.well {
+ height:350px;
+ vertical-align: top;
+}
+
+.well img{
+ width: 195px;
+ height: 120px;
+}
+
+
+body {
+ padding-top: 60px;
+}
+.content-row div{
+ display:inline-block;
+ width:192px;
+}
+.content-row input.btn{
+ margin:auto;
+ font-weight:bold;
+ width:100%;
+}
+img.content-thumbnail{
+ width:100%;
+}
+.title{
+ font-weight:bold;
+ font-size:18pt;
+ text-align:center;
+}
+.current-price{
+ color:#b94a48 ;
+ font-weight:bold;
+ font-size:22pt;
+ text-align:center;
+}
+.time-left{
+ color:#468847 ;
+ font-weight:bold;
+ font-size:18pt;
+ text-align:center;
+}
+
+/*CONTENT.HTML CSS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+
+
+#main-thumbnail{
+ text-align:center;
+ width:330px;
+ height:245px;
+ border: 1px solid #DFE2E1 ;
+ position:relative;
+}
+#main-thumbnail img{
+ max-width:330px;
+ max-height:230px;
+}
+#main-thumbnail p{
+ width:100%;
+ height:20px;
+ position:absolute;
+ bottom:-10px;
+ text-align:center;
+ font-weight:bold;
+ background-color:#999;
+ color:#ECECEC ;
+}
+#main-thumbnail p:hover{
+ cursor:pointer;
+ background-color:#666;
+}
+
+
+.time-left{
+ font-family: arial;
+ font-size: 12pt;
+ font-weight: bold;
+ color: #F60;
+ line-height: 20px;
+}
+
+/*LIST.HTML CSS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+
+.sidebar.well.span4{
+ width: 180px;
+}
+.ads tbody tr td{
+ cursor:pointer !important;
+}
+.highlight td{
+ font-weight:bold;
+}
+td.mini-thumbnail img{
+ max-height:50px;
+ max-width:100px;
+}
+td.mini-thumbnail{
+ text-align:center;
+}
+
+/*LOGIN.HTML CSS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+
+body {
+ padding-top: 60px;
+}
+.switch{
+ display:inline-block;
+ cursor:pointer;
+}

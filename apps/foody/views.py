@@ -13,18 +13,29 @@ def index(request):
     return render(request, "index.html", context)
 
 
-def login_register(request):
-    return render(request, 'Login_Registration.html')
+def buyer_or_chef(request):
+    return render(request, 'buyer_or_chef.html')
+
+
+def buyer_login_view(request):
+    return render(request, 'buyer_login_registration.html')
 
 
 def register_chef(request):
-    name = request.POST.get("chef_name_reg")
-    email = request.POST.get("chef_email_reg")
-    password = request.POST.get("chef_pwd_reg").encode()
-    confirm_password = request.POST.get("chef_confirm_pwd_reg").encode()
+    """
+    Author: DK
+    Creates new chef profile in DB
+
+    :param request
+    :return:
+    """
+    username = request.POST.get("chef_name_register")
+    email = request.POST.get("chef_email_register")
+    password = request.POST.get("chef_pwd_register").encode()
+    confirm_password = request.POST.get("chef_confirm_pwd_register").encode()
     error = False
 
-    if Chef.chef_manager.validuser(name):
+    if Chef.chef_manager.validuser(username):
         messages.error(request, 'Username is not long enough!!', extra_tags='name')
         error = True
 
@@ -32,7 +43,7 @@ def register_chef(request):
         messages.error(request, 'Email is not valid', extra_tags='email')
         error = True
 
-    if Chef.chef_manager.validemail(password):
+    if Chef.chef_manager.validpassword(password):
         messages.error(request, 'Password must be at least 8 characters!!', extra_tags='password')
         error = True
 
@@ -41,14 +52,21 @@ def register_chef(request):
         error = True
 
     if error:
-        return redirect('/')
+        return redirect('/chef_login_view')
     else:
-        Chef.chef_manager.registerChef(name, email, password)
-        request.session['name'] = name
+        Chef.chef_manager.register_chef(username, email, password)
+        request.session['name'] = username
         return render(request, 'index.html')
 
 
 def login_chef(request):
+    """
+    Author: DK
+    Logs in chef
+
+    :param request:
+    :return:
+    """
     error = False
     email = request.POST.get("chef_email_login")
     password = request.POST.get('chef_pwd_login').encode()
@@ -63,16 +81,96 @@ def login_chef(request):
     if error:
         return redirect('/login')
     else:
-        Chef.chef_manager.login_chef(email, password)
-        chef = Chef.chef_manager.filter(email=email).last()
+        if Chef.chef_manager.login_chef(email, password):
+            chef = Chef.chef_manager.filter(email=email).last()
 
-        request.session['name'] = chef.name
+            request.session['name'] = chef.username
 
-        context = {
-            "name": Chef.chef_manager.filter(email=email, password=password).last()
-        }
-        return redirect('/', context)
+            context = {
+                "name": Chef.chef_manager.filter(email=email, password=password).last()
+            }
+            return redirect('/', context)
+        else:
+            messages.error(request, 'Your credentials does not match!', extra_tags='password_login')
+            return redirect('/')
 
+
+def chef_login_view(request):
+    return render(request, 'chef_login_registration.html')
+
+
+def register_buyer(request):
+    """
+    Author: DK
+    Creates new chef profile in DB
+
+    :param request, name, email, password, confirm_password:
+    :return:
+    """
+    name = request.POST.get("buyer_name_register")
+    email = request.POST.get("buyer_email_register")
+    password = request.POST.get("buyer_pwd_register").encode()
+    confirm_password = request.POST.get("buyer_confirm_pwd_register").encode()
+    error = False
+
+    if Buyer.buyer_manager.validuser(name):
+        messages.error(request, 'Username is not long enough!!', extra_tags='name')
+        error = True
+
+    if Buyer.buyer_manager.validemail(email):
+        messages.error(request, 'Email is not valid', extra_tags='email')
+        error = True
+
+    if Buyer.buyer_manager.validpassword(password):
+        messages.error(request, 'Password must be at least 8 characters!!', extra_tags='password')
+        error = True
+
+    if Buyer.buyer_manager.matchpasswords(password, confirm_password):
+        messages.error(request, 'Password Confirmation doesn\'t match!!', extra_tags='password_confirm')
+        error = True
+
+    if error:
+        return redirect('/')
+    else:
+        Buyer.buyer_manager.register_buyer(name, email, password)
+        request.session['name'] = name
+        return render(request, 'index.html')
+
+
+def login_buyer(request):
+    """
+    Author: DK
+    Logs in chef
+
+    :param request:
+    :return:
+    """
+    error = False
+    email = request.POST.get("buyer_email_login")
+    password = request.POST.get('buyer_pwd_login').encode()
+
+    if Buyer.buyer_manager.validemail(email):
+        messages.error(request, 'Email is in the wrong format!', extra_tags='email_login')
+        error = True
+    if Buyer.buyer_manager.validpassword(password):
+        messages.error(request, 'Password must be at least 8 characters!!', extra_tags='password_login')
+        error = True
+
+    if error:
+        return redirect('/login')
+    else:
+        if Buyer.buyer_manager.login_buyer(email, password):
+            buyer = Buyer.buyer_manager.filter(email=email).last()
+
+            request.session['name'] = buyer.name
+
+            context = {
+                "name": Buyer.buyer_manager.filter(email=email, password=password).last()
+            }
+            return redirect('/', context)
+        else:
+            messages.error(request, 'Your credentials does not match!', extra_tags='password_login')
+            return redirect('/')
 
 
 def add_dish(request):

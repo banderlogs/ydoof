@@ -3,13 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Login & Regitration</title>
+
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="static/scripts/jquery.min.js"></script>
+    <script src="static/scripts/bootstrap-dropdown.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function () {
+            $('#topbar').dropdown();
+
+            $('#username_in').focus();
+        });
+
+        $(document).delegate('.switch', 'click', function () {
+
+            var c = $(this).attr('data-switch');
+            $('#sign-in-form').slideUp(300, function () {
+                $(this).addClass('hide');
+            });
+            $('#forgot-password-form').slideUp(300, function () {
+                $(this).addClass('hide');
+            });
+            $('#' + c).slideDown(300, function () {
+                $(this).removeClass('hide');
+                $('input:first', this).focus();
+            });
+            c = null;
+
+        });
+    </script>
+
+    {#    Styles     #}
+    <link href="static/styles/bootstrap.min.css" rel="stylesheet">
+    
 </head>
 <body>
 <div class="container">
     <div class='row'>
         <!-- Main hero unit for a primary marketing message or call to action -->
         <div class="well span6 offset2">
-            <form action="/register_chef" method="post" class='form-stacked' id='sign-up-form'>
+            <form action="/register_buyer" method="post" class='form-stacked' id='sign-up-form'>
                 {% csrf_token %}
                 <h2>Sign Up for Free</h2>
 

@@ -9,7 +9,7 @@ EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
 
 class ChefManager(models.Manager):
-    def login_chef(self, username, password):
+    def login_chef(self, email, password):
         """
         Author: NP
         Used to login the chef
@@ -18,45 +18,26 @@ class ChefManager(models.Manager):
         :param password: chef password
         :return:
         """
-        error = []
+        passwordHash = Chef.chef_manager.get(email=email).password.encode()
 
-        if not username:
-            error.append("error")
-        elif len(username) < 3:
-            error.append("Chef name is too short.")
-
-        if not password:
-            error.append("Password field must not be empty.")
-        elif len(password) < 8:
-            error.append("Chef name is too short.")
-
-        if len(error) > 0:
-            return [False, error]
+        if bcrypt.hashpw(password, passwordHash) == passwordHash:
+            return True
         else:
-            passwordHash = Chef.chef_manager.get(username=username).password.encode()
-
-            if bcrypt.hashpw(password, passwordHash) == passwordHash:
-                return True
-            else:
-                error.append("The password or username is wrong.")
-                return [False, error]
+            return False
 
 
     def register_chef(self, user_name, email, password):
         """
-        Author: NP
+        Author: DK
         Used to register a new Chef
 
         :param user_name:
-        :param description:
-        :param photo_url:
-        :param location:
-        :param carry_deliv:
-        :param time_availability:
+        :param email:
+        :param password:
         :return:
         """
         hashedPW = bcrypt.hashpw(password, bcrypt.gensalt())
-        Chef.chef_manager.create(name=user_name, email=email, password=hashedPW, created_at=now, updated_at=now)
+        Chef.chef_manager.create(username=user_name, email=email, password=hashedPW, created_at=now, updated_at=now)
         return [True]
 
     def validuser(self, username_valid):
@@ -85,44 +66,36 @@ class ChefManager(models.Manager):
 
 
 class BuyerManager(models.Manager):
-    def logUser(self, username_in, pwd_in):
-        error = False
-        if len(username_in) < 2:
-            error = True  # END OF EMAIL VALIDATION
+    def login_buyer(self, email, password):
+        """
+        Author: DK
+        Used to login the buyer
 
-        if len(pwd_in) < 8:
-            error = True  # END OF PASSWORD VALIDATION
+        :param email: buyer username
+        :param password: buyer password
+        :return:
+        """
 
-        if error is True:
+        passwordHash = Buyer.buyer_manager.get(email=email).password.encode()
+
+        if bcrypt.hashpw(password, passwordHash) == passwordHash:
+            return True
+        else:
             return False
-        else:
-            passwordHash = Buyer.BuyerManager.get(username=username_in).password.encode()
-            if bcrypt.hashpw(pwd_in, passwordHash) == passwordHash:
-                return True
-            else:
-                return False
 
-    def regUser(self, username_up, email_up, pwd_up):
-        error = []
-        if len(username_up) < 2:
-            # messages.error.extra_tags = 'username'
-            error.append("Too short!! Username should be at least 2 characters")
-        elif not username_up:
-            error.append("Username field must be filled out")  # END OF FIRST NAME VALIDATION
+    def register_buyer(self, username, email, password):
+        """
+        Author: NP
+        Used to register a new Buyer
 
-        if not EMAIL_REGEX.match(email_up):
-            error.append("Email is in wrong format")  # END OF EMAIL VALIDATION
-
-        if len(pwd_up) < 8:
-            error.append('Password is too short')
-            # if pwd_up != passwordconf_up:
-            # END OF PASSWORD VALIDATION
-        if len(error) > 0:
-            return [False, error]
-        else:
-            hashedPW = bcrypt.hashpw(pwd_up, bcrypt.gensalt())
-            newuser = Buyer.BuyerManager.create(username=username_up, email=email_up, password=hashedPW, created_at=now)
-            return [True]
+        :param username:
+        :param email:
+        :param password:
+        :return: True/False
+        """
+        hashedPW = bcrypt.hashpw(password, bcrypt.gensalt())
+        Buyer.buyer_manager.create(username=username, email=email, password=hashedPW, created_at=now, updated_at=now)
+        return True
 
     def validuser(self, username_valid):
         if len(username_valid) < 3:
@@ -137,13 +110,13 @@ class BuyerManager(models.Manager):
             return False
 
     def validpassword(self, pass_valid):
-        if len(pass_valid) < 9:
+        if len(pass_valid) < 8:
             return True
         else:
             return False
 
-    def matchpasswords(self, password, confirmpass):
-        if password != confirmpass:
+    def matchpasswords(self, password, confirm_password):
+        if password != confirm_password:
             return True
         else:
             return False
@@ -216,9 +189,8 @@ class OrderManager(models.Manager):
             return [True]
 
 
-
 class Chef(models.Model):
-    name = models.CharField(max_length=60)
+    username = models.CharField(max_length=60)
     address = models.CharField(max_length=100, null=True)
     email = models.CharField(max_length=45)
     password = models.CharField(max_length=25)

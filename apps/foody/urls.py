@@ -18,8 +18,13 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index),
-    url(r'^login$', views.login_register),
+    url(r'^login$', views.buyer_or_chef),
     url(r'^register_chef$', views.register_chef),
     url(r'^login_chef$', views.login_chef),
+    url(r'^register_buyer$', views.register_buyer),
+    url(r'^login_buyer$', views.login_buyer),
+    url(r'^chef_login_view$', views.chef_login_view),
+    url(r'^buyer_login_view$', views.buyer_login_view),
+    url(r'^buyer_or_chef$', views.buyer_or_chef),
 
 ]
