@@ -79,7 +79,7 @@ def login_chef(request):
         error = True
 
     if error:
-        return redirect('/login')
+        return redirect('/chef_login_view')
     else:
         if Chef.chef_manager.login_chef(email, password):
             chef = Chef.chef_manager.filter(email=email).last()
@@ -92,7 +92,7 @@ def login_chef(request):
             return redirect('/', context)
         else:
             messages.error(request, 'Your credentials does not match!', extra_tags='password_login')
-            return redirect('/')
+            return redirect('/chef_login_view')
 
 
 def chef_login_view(request):
@@ -130,7 +130,7 @@ def register_buyer(request):
         error = True
 
     if error:
-        return redirect('/')
+        return redirect('/buyer_login_view')
     else:
         Buyer.buyer_manager.register_buyer(name, email, password)
         request.session['name'] = name
@@ -157,7 +157,7 @@ def login_buyer(request):
         error = True
 
     if error:
-        return redirect('/login')
+        return redirect('/buyer_login_view')
     else:
         if Buyer.buyer_manager.login_buyer(email, password):
             buyer = Buyer.buyer_manager.filter(email=email).last()
@@ -170,7 +170,7 @@ def login_buyer(request):
             return redirect('/', context)
         else:
             messages.error(request, 'Your credentials does not match!', extra_tags='password_login')
-            return redirect('/')
+            return redirect('/buyer_login_view')
 
 
 def add_dish(request):

@@ -34,7 +34,7 @@
 
     {#    Styles     #}
     <link href="static/styles/bootstrap.min.css" rel="stylesheet">
-    
+
 </head>
 <body>
 <div class="container">
@@ -48,7 +48,7 @@
                 <div class='cleaner_h20'></div>
 
                 <div class="clearfix">
-                    <label for="chef_email_register">Email:
+                    <label for="buyer_email_register">Email:
                         {% if messages %}
 
                             {% for message in messages %}
@@ -62,12 +62,12 @@
                         {% endif %}
                     </label>
                     <div class="input">
-                        <input id="chef_email_register" name="chef_email_register" size="30" type="text" class='xlarge'/>
+                        <input id="buyer_email_register" name="buyer_email_register" size="30" type="text" class='xlarge'/>
                     </div>
                 </div>
 
                 <div class="clearfix">
-                    <label for="chef_name_register">Name:
+                    <label for="buyer_name_register">Name:
                         {% if messages %}
 
                             {% for message in messages %}
@@ -81,13 +81,13 @@
                         {% endif %}
                     </label>
                     <div class="input">
-                        <input id="chef_name_register" name="chef_name_register" size="30" type="text" class='xlarge'/>
+                        <input id="buyer_name_register" name="buyer_name_register" size="30" type="text" class='xlarge'/>
                     </div>
                 </div>
 
                 <div class="clearfix">
 
-                    <label for="chef_pwd_register">Password:
+                    <label for="buyer_pwd_register">Password:
                         {% if messages %}
 
                             {% for message in messages %}
@@ -101,13 +101,13 @@
                         {% endif %}
                     </label>
                     <div class="input">
-                        <input id="chef_pwd_register" name="chef_pwd_register" size="30" type="password" class='xlarge'/>
+                        <input id="buyer_pwd_register" name="buyer_pwd_register" size="30" type="password" class='xlarge'/>
                     </div>
                 </div>
 
                 <div class="clearfix">
 
-                    <label for="chef_confirm_pwd_register">Confirm Password:
+                    <label for="buyer_confirm_pwd_register">Confirm Password:
                         {% if messages %}
 
                             {% for message in messages %}
@@ -121,7 +121,7 @@
                         {% endif %}
                     </label>
                     <div class="input">
-                        <input id="chef_confirm_pwd_register" name="chef_confirm_pwd_register" size="30" type="password" class='xlarge'/>
+                        <input id="buyer_confirm_pwd_register" name="buyer_confirm_pwd_register" size="30" type="password" class='xlarge'/>
                     </div>
                 </div>
 
@@ -142,7 +142,7 @@
         </div>
 
         <div class="well span5">
-            <form action="/login_chef" method="post" class='form-stacked' id='sign-in-form'>
+            <form action="/login_buyer" method="post" class='form-stacked' id='sign-in-form'>
                 {% csrf_token %}
                 <h2>Sign In</h2>
 
@@ -154,7 +154,7 @@
                     <div class="clearfix">
 
 
-                        <label for="chef_email_login">Email:
+                        <label for="buyer_email_login">Email:
                             {% if messages %}
                                 {% for message in messages %}
                                     {% if message.extra_tags == 'email_login' %}
@@ -164,14 +164,14 @@
                             {% endif %}
                         </label>
                         <div class="input">
-                            <input id="chef_email_login" name="chef_email_login" size="30" type="text"/>
+                            <input id="buyer_email_login" name="buyer_email_login" size="30" type="text"/>
                         </div>
                     </div>
 
                     <div class="clearfix">
 
 
-                        <label for="chef_pwd_login">Password:
+                        <label for="buyer_pwd_login">Password:
                             {% if messages %}
                                 {% for message in messages %}
                                     {% if message.extra_tags == 'password_login' %}
@@ -181,7 +181,7 @@
                             {% endif %}
                         </label>
                         <div class="input">
-                            <input id="chef_pwd_login" name="chef_pwd_login" size="30" type="password"/>
+                            <input id="buyer_pwd_login" name="buyer_pwd_login" size="30" type="password"/>
                         </div>
                     </div>
 
