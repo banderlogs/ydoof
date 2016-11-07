@@ -203,8 +203,10 @@ def add_dish(request):
     elif request.GET:
         return render(request, '/add_dish')
 
-
-
 def get_all_messages_inbox(request):
     if request.method == "POST":
         Message.objects.filter(reciever=request.user)
+
+def return_dish(request):
+    pass
+
