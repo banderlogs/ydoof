@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Dish, Chef, Buyer, Order
+from .models import Dish, Chef, Buyer, Order, Message
 
 # Create your views here.
 
@@ -203,3 +203,8 @@ def add_dish(request):
     elif request.GET:
         return render(request, '/add_dish')
 
+
+
+def get_all_messages_inbox(request):
+    if request.method == "POST":
+        Message.objects.filter(reciever=request.user)

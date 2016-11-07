@@ -135,58 +135,38 @@ class DishManager(models.Manager):
         :param dish_chef_obj:
         :return:
         """
-        error = []
-
-        if not dish_name:
-            error.append("Dish name field must be filled out.")
-        elif len(dish_name) < 3:
-            error.append("Dish Name is too short. It must be more than 3 letters.")
-
-        if not dish_description:
-            error.append("Dish description must be filled out.")
-
-        if not dish_price:
-            error.append("Dish price must be filled out.")
-
-        if not dish_photo_url:
-            error.append("At least one Dish Photo must be submitted.")
-
-        if len(error) > 0:
-            return [False, error]
-        else:
-            Dish.dish_manager.create(name=dish_name,
-                                     price=dish_price,
-                                     description=dish_description,
-                                     photo_url=dish_photo_url,
-                                     belong_to_chef=dish_chef_obj,
-                                     created_at=now,
-                                     updated_at=now)
-            return [True]
+        Dish.dish_manager.create(name=dish_name,
+                                 price=dish_price,
+                                 description=dish_description,
+                                 photo_url=dish_photo_url,
+                                 belong_to_chef=dish_chef_obj,
+                                 created_at=now,
+                                 updated_at=now)
+        return True
 
 
 class OrderManager(models.Manager):
     def create_new_order(self, order_price, order_dishes, order_comment, order_delivery_options):
+        """
+        Author: NP
+        Creates a new order
 
-        error = []
+        :param order_price:
+        :param order_dishes:
+        :param order_comment:
+        :param order_delivery_options:
+        :return:
+        """
 
-        if not order_price:
-            error.append("Order Price field must be filled out.")
+        Order.order_manager.create(state='PENDING',
+                                   delivery_type=order_delivery_options,
+                                   price=order_price,
+                                   dishes=order_dishes,
+                                   comment=order_comment,
+                                   created_at=now,
+                                   updated_at=now)
 
-        if not order_dishes:
-            error.append("Dish Order field must be filled out.")
-
-        if len(error) > 0:
-            return [False, error]
-        else:
-            Order.order_manager.create(state='PENDING',
-                                       delivery_type=order_delivery_options,
-                                       price=order_price,
-                                       dishes=order_dishes,
-                                       comment=order_comment,
-                                       created_at=now,
-                                       updated_at=now)
-
-            return [True]
+        return True
 
 
 class Chef(models.Model):
@@ -272,13 +252,7 @@ class Buyer(models.Model):
 
 
 class Message(models.Model):
-    user_name_sender = models.OneToOneField(
-        Buyer,
-        on_delete=models.CASCADE
-    )
-    user_name_reciever = models.OneToOneField(
-        Chef,
-        on_delete=models.CASCADE,
-    )
-    send_at = models.DateTimeField(auto_now_add=True)
-    message = models.TextField()
+    sender = models.ForeignKey(Buyer, related_name="sender")
+    reciever = models.ForeignKey(Chef, related_name="receiver")
+    msg_content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)

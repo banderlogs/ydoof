@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                 ('send_at', models.DateTimeField(auto_now_add=True)),
                 ('message', models.TextField()),
                 ('user_name_reciever', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='foody.Chef')),
-                ('user_name_sender', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='foody.Buyer')),
+                ('sender', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='foody.Buyer')),
             ],
         ),
         migrations.AddField(
